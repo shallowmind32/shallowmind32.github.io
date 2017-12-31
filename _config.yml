@@ -1,10 +1,10 @@
 # Site settings
-title:       ShallowMind
+title:       shallowmind32.github.io
 email:       me@mikehwu.com
 author:      Mike Wu
 description: "A blog about machine learning and research in AI."
-baseurl:     ""
-url:         "http://shallowmind.co"
+baseurl:     "/shallowmind32.github.io"
+url:         "http://shallowmind32.github.io"
 date_format: "%b %-d, %Y"
 header_pages:
  - about.md
