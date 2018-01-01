@@ -37,7 +37,7 @@ fb_page_id:
 
 # Disqus post comments
 # (leave blank to disable Disqus)
-disqus_shortname:
+disqus_shortname: 'shallowmind-1'
 
 # txtpen post comments
 # (leave blank to disable txtpen)
