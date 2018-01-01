@@ -13,7 +13,7 @@ categories: jekyll pixyll
 In the past years, deep learning has quickly become the industry and research workhorse for prediction, and rightfully so! Neural networks have time and time again set the start-of-the-art for image classification, speech recognition, text translation among a continuously growing list of difficult problems. In October, Deepmind released a more powerful version of AlphaGo that could be trained from scratch to defeat even the best human players and bots, hinting at a promising future for AI. In industry, companies like Facebook and Google have deep networks integrated at the core of their computational pipelines, thereby relying on these algorithms to process billions of bytes of data daily. Following suite, new startups like <a href="https://www.springhealth.com/">Spring</a> or <a href="https://www.babylonhealth.com/">Babylon Health</a> are adapting similar methods to disrupt the healthcare domain. Needless to say, deep learning is starting to impact our daily lives.
 
 ![grad_cam]({{ "/images/tree_regularization/grad-cam.png" | absolute_url }})
-*<b>Figure 1:</b> Grad-Cam - Creating visual explanations for decisions by using gradients of target concepts to highlight important pixels. (Selvaraju et. al. 2017).*
+*<b>Figure 1:</b> GradCam - Creating visual explanations for decisions by using gradients of target concepts to highlight important pixels. (Selvaraju et. al. 2017).*
 
 But deep learning is a black box. When I first heard of it, I had a really hard time grasping how it works. Years later, I am still searching for a good answer. <b>Trying to interpret modern neural networks is a difficult but extremely important problem</b>. If we are going to be relying on deep learning to make new AI, handle sensitive user data, or prescribe medication, we must be able to understand how these models think.
 
@@ -33,7 +33,7 @@ When picking a definition, I'd encourage one that <b>involves a human</b> since 
 
 ## What is interpretability?
 
-In other words, we can think of interpretability as <u>human simulatability</u>. A model is <u>simulatable</u> if a human can <i>take in input data together with the parameters of the model and in <b>reasonable</b> time, step through every calculation required to make a prediction</i> (<i>Lipton 2016</i>).
+We should think of interpretability as <u>human simulatability</u>. A model is <u>simulatable</u> if a human can <i>take in input data together with the parameters of the model and in <b>reasonable</b> time, step through every calculation required to make a prediction</i> (<i>Lipton 2016</i>).
 
 This is rather strict but powerful definition. Going back to a hospital ecosystem: given a simulatable model, doctors can easily check every step the model is taking against their own expert knowledge, and even reason about things like fairness and systemic bias in the data. This allows practictioners to help improve models in a positive feedback loop. 
 
@@ -46,7 +46,7 @@ It's easy to see that decision trees \(DTs) are simulatable. For example, if I'm
 
 *<b>Figure 3:</b> Decision Tree trained to classify risk of heart attack. This tree has a maximum path length of 3.*
 
-If we could get away with using trees instead of DNNs, then we'd be done. While we sacrifice interpretability, DNNs give us much more power than trees do. Is it possible for us to combine DTs and DNNs to get something simulatable <b>and</b> powerful?
+If we could get away with using trees instead of DNNs, then we'd be done. But while we sacrifice interpretability, DNNs give us much more power than trees do. Is it possible for us to combine DTs and DNNs to get something simulatable <b>and</b> powerful?
 
 Naively, we could try to do something like LIME where we construct a mimic DT to approximate the predictions of a trained DNN. But there are many local minima when training deep neural networks, only some of which are easy to simulate. By trying to approximate an already-trained DNN, we may end up in a minima that is difficult to simulate (produce a huge DT that is hard to walk through in reasonable time).
 
@@ -73,14 +73,14 @@ $$ \lambda\psi(W) + \sum_{n=1}^{N}\sum_{n=1}^{T_{n}}\mathsf{loss}(y_{nt}, \hat{y
 
 where \\(\psi\\) is a regularizer (i.e. L1 or L2), \\(\lambda\\) is a regularization strength, \\(W\\) is the set of RNN weights, \\(y_{nt}\\) is the ground truth output at a single timestep, and \\(\hat{y}\_{nt}\\) is the predicted output at a single timestep. The \\(\mathsf{loss}\\) is normally a cross-entropy loss.
 
-Switches to tree regularization requires two changes. The first part is given some RNN with weights \\(W\\) (these can be partially trained weights), we pass the training data \\(X_{1:N,1:T}\\) through the RNN to make predictions \\(\hat{y}\_{1:N,1:T}\\). We then train a decision tree using \\(X_{1:N,1:T}, \hat{y}\_{1:N,1:T}\\) to try to match the predictions of the RNN.
+Adding tree regularization requires two changes. The first part is given some RNN with weights \\(W\\) (these can be partially trained weights), we pass the training data \\(x_{1:N,1:T}\\) through the RNN to make predictions \\(\hat{y}\_{1:N,1:T}\\). We then train a decision tree using \\(x_{1:N,1:T}, \hat{y}\_{1:N,1:T}\\) to try to match the predictions of the RNN.
 
 ![tree_reg_1]({{ "/images/tree_regularization/tree-reg-1.png" | absolute_url }})
 *<b>Figure 4:</b> At any point in the optimization, we can approximate a partially trained DNN with a simpler decision tree.*
 
 At this point, we have a mimic DT. But we could have a really small or really large DT. We would like to be able to quantify the <u>size</u> of the tree.
 
-To do so, we consider the tree's <i>average path length</i> \(APL). For a single example, the <i>path length</i> is the depth you have to reach in the tree to make a prediction. For example, consider the DT for heart attack prediction shown above. Imagine an input \\(x\\) with an age of 70. The path length of \\(x\\) would then be 2. Then, the average path length would be \\(\sum_{n=1}^{N} \mathsf{pathlength}(x_{n}, \hat{y}\_{n})\\). Another way to think about this is the cost for a human to simulate the average example. 
+To do so, we consider the tree's <i>average path length</i> \(APL). For a single example, the <i>path length</i> is the depth you have to travel in the tree to make a prediction. For example, consider the DT for heart attack prediction shown in Figure 3. Imagine an input \\(x\\) with an age of 70. The path length of \\(x\\) would then be 2 since 70 > 62.5. As such, the average path length is simply \\(\sum_{n=1}^{N} \mathsf{pathlength}(x_{n}, \hat{y}\_{n})\\). Another way to think about this is the cost for a human to simulate the average example. 
 
 ![tree_reg_2]({{ "/images/tree_regularization/tree-reg-2.png" | absolute_url }})
 *<b>Figure 5:</b> Given a decision tree and a dataset, we can compute the average path length as the cost of simulating/interpreting the average example. By including this term in the objective, we want to encourage our DNN to produce DTs that are simple and penalize them for creating giant trees.*
