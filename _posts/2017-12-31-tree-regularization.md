@@ -10,7 +10,7 @@ categories: jekyll pixyll
 
 ---
 
-In the past years, deep learning has quickly become the industry and research workhorse for prediction, and rightfully so! Neural networks have time and time again set the start-of-the-art for image classification, speech recognition, text translation among a continuously growing list of difficult problems. In October, Deepmind released a more powerful version of AlphaGo that could be trained from scratch to defeat even the best human players and bots, hinting at a promising future for AI. In industry, companies like Facebook and Google have deep networks integrated at the core of their computational pipelines, thereby relying on these algorithms to process billions of bytes of data daily. Following suite, new startups like <a href="https://www.springhealth.com/">Spring</a> or <a href="https://www.babylonhealth.com/">Babylon Health</a> are adapting similar methods to disrupt the healthcare domain. Needless to say, deep learning is starting to impact our daily lives.
+In the past years, deep learning has quickly become the industry and research workhorse for prediction, and rightfully so. Neural networks have time and time again been the state-of-the-art for image classification, speech recognition, text translation, and more among a growing list of difficult problems. In October, Deepmind released a more powerful version of AlphaGo that could be trained from scratch to defeat even the best human players and bots, hinting at a promising future for AI. In industry, companies like Facebook and Google have deep networks integrated at the core of their computational pipelines, thereby relying on these algorithms to process billions of bytes of data daily. Following suite, new startups like <a href="https://www.springhealth.com/">Spring</a> or <a href="https://www.babylonhealth.com/">Babylon Health</a> are adapting similar methods to disrupt the healthcare domain. Needless to say, deep learning is starting to impact our daily lives.
 
 ![grad_cam]({{ "/images/tree_regularization/grad-cam.png" | absolute_url }})
 *<b>Figure 1:</b> GradCam - Creating visual explanations for decisions by using gradients of target concepts to highlight important pixels. (Selvaraju et. al. 2017).*
@@ -35,7 +35,7 @@ When picking a definition, I'd encourage one that <b>involves a human</b> since 
 
 We should think of interpretability as <u>human simulatability</u>. A model is <u>simulatable</u> if a human can <i>take in input data together with the parameters of the model and in <b>reasonable</b> time, step through every calculation required to make a prediction</i> (<i>Lipton 2016</i>).
 
-This is rather strict but powerful definition. Going back to a hospital ecosystem: given a simulatable model, doctors can easily check every step the model is taking against their own expert knowledge, and even reason about things like fairness and systemic bias in the data. This allows practictioners to help improve models in a positive feedback loop. 
+This is rather strict but powerful definition. Going back to a hospital ecosystem: given a simulatable model, doctors can easily check every step the model is taking against their own expert knowledge, and even reason about things like fairness and systemic bias in the data. This allows practitioners to help improve models in a positive feedback loop. 
 
 ## Decision Trees are simulatable.
 
@@ -131,9 +131,9 @@ At least for this toy example, tree regularization seems to lead to better perfo
 
 Now that we have an intuitive sense of what tree regularization does, we can now move on to real world datasets (with binary-outcomes) and see how it compares to L1 and L2. Briefly, let's go over each of the datasets:
 
-- <a href="https://mimic.physionet.org/">Sepsis</a> (<i>Johnson et. al. 2016</i>): Time-series data for over 11k septic intensive-care-unit (ICU) patients. We get at each timestep a data vector vector of 35 vital signs and label results (i.e. oxygen levels or heart rate) and a label of 5 binary outcomes (i.e. if a ventilation was used or mortality). 
+- <a href="https://mimic.physionet.org/">Sepsis</a> (<i>Johnson et. al. 2016</i>): Time-series data for over 11k septic intensive-care-unit (ICU) patients. We get at each timestep a data vector of 35 vital signs and label results (i.e. oxygen levels or heart rate) and a label of 5 binary outcomes (i.e. if a ventilation was used or mortality). 
 - <a href="http://engine.euresist.org/">EuResist</a> (<i>Zazzi et. al. 2012</i>): Time-series data for 50k patients diagnosed with HIV. The structure is very similar to Sepsis but with a different set of 40 input features and 15 output features.
-- <a href="https://catalog.ldc.upenn.edu/ldc93s1">TIMIT</a> (<i>Garofolo et. al. 1993</i>): recordings of 630 English speakers where each sentence contains transcriptions of 60 phonemes. We focus on distinguish <i>stop</i> phonemes (those that stop the flow of air i.e. "b" or "g") from non-stops. The input features are continuous acoustic coefficients and derivatives.
+- <a href="https://catalog.ldc.upenn.edu/ldc93s1">TIMIT</a> (<i>Garofolo et. al. 1993</i>): recordings of 630 English speakers where each sentence contains transcriptions of 60 phonemes. We focus on distinguishing <i>stop</i> phonemes (those that stop the flow of air i.e. "b" or "g") from non-stops. The input features are continuous acoustic coefficients and derivatives.
 
 We do the same thing as our toy dataset. Except this time we train a GRU-RNN. We again perform a set of experiments with varying regularization strengths and now, varying hidden unit sizes for the GRU. 
 
@@ -161,7 +161,7 @@ For hospital mortality, he noted some apparent contradictions in our tree: some 
 
 To really drive the point home, we can take a look at a mimic DT that tries to explain why a patient would have trouble adhering to a HIV drug prescription \(EuResist). Again, we consulted clinical collaborators, who confirmed that the baseline viral load and the number of prior treatment lines, which are prominent attributes in our DT, are useful predictors. Several studies (<i>Langford, Ananworanich, and Cooper 2007, Socas et. al. 2011</i>) suggest that high baseline viral loads lead to faster disease progression and hence need multiple drug cocktails. Juggling many drugs tends to make it harder for patients to adhere to a prescription.
 
-## Interpretability as a priority.
+## Interpretability is a priority.
 
 The main takeaway here is a technique that encourages complex models to be well-approximated by human-simulatable functions without sacrificing too much on predictive performance. I think this flavor of interpretability is really powerful, and can allow domain experts to understand and approximately compute what a black-box model is doing.
 
@@ -178,18 +178,18 @@ This work is to appear at AAAI 2018 as <i>Beyond Sparsity: Tree Regularization o
 
 <b>How well does the surrogate MLP track the APL?</b>
 
-Surprisingly well. In all experiments, we used a single layer MLP with 25 hidden nodes (which is a rather small network). This must suggest that there is low dimensional representation of the weights that are predictive of APL).
+Surprisingly well. In all experiments, we used a single layer MLP with 25 hidden nodes (which is a rather small network). This must suggest that there is a low dimensional representation of the weights that are predictive of APL).
 
 ![tracking]({{ "/images/tree_regularization/tracking.png" | absolute_url }})
 *<b>Figure 12</b>: <i>True node count</i> refers to actually training a decision tree and computing the APL. <i>Predicted node count</i> refers to the output of the surrogate MLP.*
 
-<b>How well does a tree-regularized model do compared to a decision tree?</b>
+<b>How well does a tree-regularized model do compared to a vanilla decision tree?</b>
 
 Each of the comparison plots above show decision tree AUCs compared with regulared-DNNs. To generate these lines, we do a grid search over different decision tree hyperparameters i.e. minimum number of samples to define a leaf, gini factor, etc. We note that in all cases, DT performance is worse than all regularization methods. This shows that tree-regularization does not just copy a DT.
 
 <b>Is there anything similar to this in literature?</b>
 
-Besides the related work mentioned in the beginning of this blog, model distillation/compression is probably the most similar work. There the main idea to train a smaller model to mimic a deeper net. Here, we are essentially performing distillation using a DT during optimization.
+Besides the related work mentioned in the beginning of this blog, model distillation/compression is probably the most similar sub-field. There the main idea to train a smaller model to mimic a deeper net. Here, we are essentially performing distillation using a DT during optimization.
 
 <b>How are the runtimes for tree-regularization?</b>
 
@@ -213,7 +213,7 @@ In the table above, we measure <b>fidelity</b> (<i>Craven and Shavlik 1996</i>),
 
 (This section talks about a new model designed for interpretability.)
 
-A <b>hidden markov model</b> \(HMM) is like a stochastic RNN. It models some latent variable sequence \\([z_{1}, ..., z_{T}]\\) where each latent variable is one of \\(K\\) discrete states: \\(z_{t} \in \{1, \cdots, K \}\\). The state sequence is used to generate the data \\(x_{t}\\) and outputs \\(y_{t}\\) observed at each timestep. Notable, it includes a transition matrix \\(A\\) where \\(A_{ij}=\mathsf{Pr}\(z_{t}=i \| z_{t-1}=j\)\\) and some emission parameters that generate data. HMMs are generally considered to be a more interpretable model since the \\(K\\) latent variables that cluster the data are usually semantically meaningful.
+A <b>hidden markov model</b> \(HMM) is like a stochastic RNN. It models some latent variable sequence \\([z_{1}, ..., z_{T}]\\) where each latent variable is one of \\(K\\) discrete states: \\(z_{t} \in \{1, \cdots, K \}\\). The state sequence is used to generate the data \\(x_{t}\\) and outputs \\(y_{t}\\) observed at each timestep. Notably, it includes a transition matrix \\(A\\) where \\(A_{ij}=\mathsf{Pr}\(z_{t}=i \| z_{t-1}=j\)\\) and some emission parameters that generate data. HMMs are generally considered to be a more interpretable model since the \\(K\\) latent variables that cluster the data are usually semantically meaningful.
 
 We define a <b>GRU-HMM</b> as a GRU that models the residual errors when predicting a binary target using the HMM latent states (in other words, only use the GRU when the HMM is insufficient in capturing the data). By nature of being a residual model, we can penalize the complexity of the GRU output node alone using tree regularization, leaving the HMM unconstrained.
 
